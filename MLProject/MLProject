@@ -1,4 +1,4 @@
-name: coffeeshop-ml-project
+name: coffee-menu-clustering
 
 entry_points:
   main:
