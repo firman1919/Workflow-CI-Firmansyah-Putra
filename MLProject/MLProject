@@ -1,5 +1,9 @@
-name: coffee-menu-clustering
+name: CoffeeShop_Menu_Clustering
+
+conda_env: null  # skip conda
 
 entry_points:
   main:
-    command: "python modelling.py"
+    command: "python modelling.py --input_path {input_path}"
+    parameters:
+      input_path: path
