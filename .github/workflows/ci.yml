@@ -10,7 +10,7 @@ jobs:
   train-model:
     runs-on: ubuntu-latest
     steps:
-      # 1. Checkout repo
+      # 1. Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: 3.12.7
 
-      # 3. Check environment
+      # 3. Check Python version
       - name: Check Python version
         run: python --version
 
@@ -31,24 +31,22 @@ jobs:
           pip install -r MLProject/requirements.txt
           pip install mlflow==2.19.0
 
-      # 5. Set MLflow tracking URI (localhost atau remote)
+      # 5. Set MLflow Tracking URI
       - name: Set MLflow Tracking URI
         run: |
-          export MLFLOW_TRACKING_URI=http://127.0.0.1:5000
-          echo "MLFLOW_TRACKING_URI=$MLFLOW_TRACKING_URI" >> $GITHUB_ENV
+          echo "MLFLOW_TRACKING_URI=http://127.0.0.1:5000" >> $GITHUB_ENV
 
       # 6. Run MLflow project
       - name: Run MLflow project
-        run: |
-          mlflow run MLProject --entry-point main --param-list input_path=MLProject/coffeshop_preprocessing.csv
+        run: mlflow run MLProject --entry-point main --param-list input_path=MLProject/coffeshop_preprocessing.csv
 
-      # 7. (Optional) Upload artefak ke GitHub/Drive
-      - name: Upload artefacts (placeholder)
+      # 7. Upload artefacts (Skilled: bisa diganti dengan Google Drive/GitHub LFS)
+      - name: Upload artefacts
         uses: actions/upload-artifact@v3
         with:
           name: mlflow-artifacts
           path: MLProject/artifacts
 
-      # 8. Post-steps (cleanup if needed)
-      - name: Post Run
+      # 8. Post step
+      - name: Workflow complete
         run: echo "MLflow CI workflow completed"
