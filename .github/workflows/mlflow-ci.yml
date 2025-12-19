@@ -9,34 +9,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # 1️⃣ Checkout repository
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    # 2️⃣ Setup Python (wajib walau pakai conda)
     - name: Set up Python 3.12.7
       uses: actions/setup-python@v5
       with:
         python-version: '3.12.7'
 
+    # 3️⃣ Install Micromamba
     - name: Install Micromamba
       uses: mamba-org/setup-micromamba@v1
       with:
         micromamba-version: 'latest'
-        environment-name: mlflow-env
-        create-args: >-
-          python=3.12
-          pip
         init-shell: bash
 
-    - name: Install dependencies via pip
-      shell: bash
+    # 4️⃣ Install MLflow (GLOBAL, supaya CLI ada)
+    - name: Install MLflow
       run: |
-        micromamba activate mlflow-env
-        pip install mlflow==2.19.0 pandas scikit-learn
+        pip install mlflow==2.19.0
 
-    - name: Run MLflow Project (conda)
+    # 5️⃣ Check environment (debug-friendly)
+    - name: Check Env
+      run: |
+        python --version
+        mlflow --version
+        ls MLProject
+
+    # 6️⃣ Run MLflow Project (PAKAI CONDA)
+    - name: Run MLflow Project
       shell: bash
       run: |
-        micromamba activate mlflow-env
         mlflow run MLProject \
           --env-manager=conda \
-          -P input_path=MLProject/coffeshop_preprocessing.csv
+          -P input_path=coffeshop_preprocessing.csv
