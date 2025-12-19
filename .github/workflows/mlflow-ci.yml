@@ -20,7 +20,7 @@ jobs:
     - name: Install Micromamba
       uses: mamba-org/setup-micromamba@v1
       with:
-        micromamba-version: '1.5.8'
+        micromamba-version: 'latest'
         environment-name: mlflow-env
         create-args: >-
           python=3.12
