@@ -10,37 +10,37 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
 
     - name: Set up Python 3.12.7
       uses: actions/setup-python@v5
       with:
-        python-version: "3.12.7"
-
-    - name: Check environment
-      run: |
-        python --version
-        pip --version
+        python-version: '3.12.7'
 
     - name: Install Miniconda
       uses: conda-incubator/setup-miniconda@v3
       with:
-        auto-activate-base: false
+        auto-update-conda: true
+        activate-environment: base
         python-version: 3.12
+        auto-activate-base: true
+
+    - name: Check Conda
+      shell: bash
+      run: |
+        conda --version
+        which conda
 
     - name: Install MLflow
-      run: pip install mlflow
-
-    - name: Set MLflow Tracking URI
-      run: echo "MLFLOW_TRACKING_URI=file://$GITHUB_WORKSPACE/mlruns" >> $GITHUB_ENV
+      shell: bash
+      run: |
+        pip install --upgrade pip
+        pip install mlflow==2.19.0
 
     - name: Run MLflow Project
+      shell: bash
       run: |
         mlflow run MLProject \
+          --env-manager=conda \
+          --entry-point main \
           -P input_path=MLProject/coffeshop_preprocessing.csv
-
-    - name: Upload MLflow artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: mlflow-artifacts
-        path: mlruns
