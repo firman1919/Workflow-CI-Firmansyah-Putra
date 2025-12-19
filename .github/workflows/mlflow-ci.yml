@@ -1,40 +1,46 @@
-name: MLflow CI Training (Conda)
+name: MLflow CI Training
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
 
 jobs:
   train-model:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Set up Miniconda
-        uses: conda-incubator/setup-miniconda@v3
-        with:
-          auto-update-conda: true
-          python-version: 3.12
-          activate-environment: coffee-mlflow-env
-          environment-file: MLProject/conda.yaml
+    - name: Set up Python 3.12.7
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12.7"
 
-      - name: Check Conda environment
-        shell: bash -l {0}
-        run: |
-          conda info
-          conda list
-          python --version
+    - name: Check environment
+      run: |
+        python --version
+        pip --version
 
-      - name: Run MLflow Project
-        shell: bash -l {0}
-        run: |
-          cd MLProject
-          mlflow run .
+    - name: Install Miniconda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        auto-activate-base: false
+        python-version: 3.12
 
-      - name: Upload MLflow artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: mlflow-artifacts
-          path: mlruns
+    - name: Install MLflow
+      run: pip install mlflow
+
+    - name: Set MLflow Tracking URI
+      run: echo "MLFLOW_TRACKING_URI=file://$GITHUB_WORKSPACE/mlruns" >> $GITHUB_ENV
+
+    - name: Run MLflow Project
+      run: |
+        mlflow run MLProject \
+          -P input_path=MLProject/coffeshop_preprocessing.csv
+
+    - name: Upload MLflow artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: mlflow-artifacts
+        path: mlruns

@@ -1,5 +1,11 @@
-name: coffee-menu-clustering
+name: menu-clustering
+
+conda_env: conda.yaml
 
 entry_points:
   main:
-    command: "python modelling.py"
+    parameters:
+      input_path:
+        type: path
+    command: >
+      python modelling.py --input_path {input_path}
